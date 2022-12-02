@@ -52,9 +52,25 @@ namespace Assignment5
         /// <param name="name">The item name</param>
         /// <param name="found">The item if found</param>
         /// <returns>True if you find the item, and false if it does not exist.</returns>
-        bool TakeItem(string name, out Item found)
+        public bool TakeItem(string name, out Item found)
         {
-            throw new NotImplementedException();
+            found = new Item("", 0, ItemGroup.Equipment);
+            foreach (var item in items)
+            {
+                if (item.Key.Name == name)
+                {
+                    --items[item.Key];
+                    --item.Key.Amount;
+                    found = item.Key;
+                    if (items[item.Key] == 0)
+                    {
+                        items.Remove(item.Key);
+                        ++availableSlots;
+                    }
+                    return true;
+                }
+            }
+            return false;
         }
 
         /// <summary>
@@ -62,22 +78,41 @@ namespace Assignment5
         /// </summary>
         /// <param name="item"></param>
         /// <returns></returns>
-        bool AddItem(Item item)
+        public bool AddItem(Item item)
         {
             // Add it in the items dictionary and increment it the number if it already exist
             // Reduce the slot once it's been added.
             // returns false if the inventory is full
-            throw new NotImplementedException();
+            if (items.ContainsKey(item))
+            {
+                items[item] += item.Amount;
+                return true;
+            }
+            else if (availableSlots == 0) return false;
+
+            items.Add(item, 1);
+            availableSlots--;
+            return true;
         }
 
         /// <summary>
         /// Iterates through the dictionary and create a list of all the items.
         /// </summary>
         /// <returns></returns>
-        List<Item> ListAllItems()
+        public List<Item> ListAllItems()
         {
             // use a foreach loop to iterate through the key value pairs and duplicate the item base on the quantity.
-            throw new NotImplementedException();
+            List<Item> list = new List<Item>();
+            foreach (var item in items)
+            {
+                int i = 0;
+                while (i < item.Value)
+                {
+                    i++;
+                    list.Add(item.Key);
+                }
+            }
+            return list;
         }
     }
 }
